@@ -1,10 +1,14 @@
 package mainB.Entities;
 
+import mainB.annotations.autoIncrementation;
 import mainB.annotations.primaryKey;
+import mainB.annotations.unique;
 
 public class User {
 
     @primaryKey
+    @unique
+    @autoIncrementation
     private int id;
     
     private String email;
