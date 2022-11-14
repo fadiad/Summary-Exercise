@@ -51,9 +51,8 @@ public class Repo<T> {
     }
     public void insertInto(T obj)
     {
-        String s = "insert into " + TableName + Converter.convertObjectToSqlInsert(myClass, obj);
+        String s = QueriesUtilities.insertObject(TableName,obj,myClass);
         try {
-            System.out.println(s);
             stmt.executeUpdate(s);
         } catch (SQLException e) {
             e.printStackTrace();

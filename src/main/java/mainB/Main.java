@@ -10,13 +10,13 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws NoSuchFieldException {
 
-      //  User user=new User(11,"Yael","JoinUs");
+       User user=new User(11,"Messi","Ronaldo");
         Repo repo = new Repo(User.class);
-       //  repo.insertInto(user);
+        repo.insertInto(user);
         List<User> allObjects = repo.getAllObjects();
-        for (User user: allObjects) {
+       /* for (User user: allObjects) {
             System.out.println(user);
-        }
+        }*/
 //        Utilities.handleAnnotations(User.class);
     }
 }

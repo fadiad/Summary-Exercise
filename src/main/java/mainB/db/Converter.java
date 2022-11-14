@@ -9,45 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 class Converter {
-    public static <T> String convertObjectToSqlInsert(Class<T> clazz,T obj)
-    {
-        StringBuilder stringBuilder =new StringBuilder("(");
-        Field[] declaredFields = clazz.getDeclaredFields();
-        Object [] values=new Object[declaredFields.length];
-        int counter=0;
-        for (Field field: declaredFields) {
-            stringBuilder.append(field.getName());
-            field.setAccessible(true);
-            try {
-                values[counter]=field.get(obj);
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-            if(counter!= values.length-1)
-            {
-                stringBuilder.append(",");
-        }
-        counter++;
-        }
-        counter=0;
-        stringBuilder.append(") VALUES (");
-        for (Object value: values) {
-            if(value instanceof String)
-            {
-                stringBuilder.append("\"");
-                stringBuilder.append(value);
-                stringBuilder.append("\"");
-            }
-            else stringBuilder.append(value);
-            if(counter!= values.length-1)
-            {
-                stringBuilder.append(",");
-            }
-            counter++;
-        }
-        stringBuilder.append(");");
-        return stringBuilder.toString();
-    }
     public static <T> List<T> mapResultSetToObject(ResultSet rs, Class<T> clazz) throws SQLException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         List<T> output=new ArrayList<>();
         ResultSetMetaData rsmd = rs.getMetaData();
