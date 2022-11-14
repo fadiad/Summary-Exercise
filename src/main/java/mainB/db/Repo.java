@@ -1,22 +1,31 @@
 package mainB.db;
 
-import java.lang.reflect.Field;
 import java.sql.*;
 
-public class Repo {
+public class Repo<T> {
     private final String DB_URL = "jdbc:mysql://localhost:3306/";
     private final String USER = "root";
     private final String PASS = "";
+
+    private final Class<T> myClass;
+
     private static Connection conn;
     private static Statement stmt;
 
-    public Repo(String DBName) {
-//        makeConnection("");
-//        makeDB();
-//        makeTable("stam");
+    private static final String DBNAME = "ORMDB";
+
+    public Repo(Class<T> myClass) {
+        this.myClass = myClass;
+        start();
     }
 
-    public void makeConnection(String name) {
+    public void start() {
+        makeConnection("");
+        makeDB();
+        makeTable();
+    }
+
+    private void makeConnection(String name) {
         try {
             conn = DriverManager.getConnection(DB_URL + name, USER, PASS);
             stmt = conn.createStatement();
@@ -25,9 +34,9 @@ public class Repo {
         }
     }
 
-    public void makeDB() {
+    private void makeDB() {
         try {
-            String makeTableQuery = "CREATE DATABASE  IF NOT EXISTS ORMDB";
+            String makeTableQuery = "CREATE DATABASE IF NOT EXISTS " + DBNAME;
             stmt.executeUpdate(makeTableQuery);
         } catch (
                 SQLException e) {
@@ -46,17 +55,16 @@ public class Repo {
     }
 
 
-    public <T> void makeTable(Class<T> myClass) {
+    private void makeTable() {
         try {
-            conn = DriverManager.getConnection(DB_URL + "ORMDB", USER, PASS);
+            conn = DriverManager.getConnection(DB_URL + DBNAME, USER, PASS);
             stmt = conn.createStatement();
             String makeTableQuery = Utilities.generateTable(myClass);
             System.out.println(makeTableQuery);
-             stmt.executeUpdate(makeTableQuery);
+            stmt.executeUpdate(makeTableQuery);
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
-
 
 }

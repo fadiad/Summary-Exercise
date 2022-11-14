@@ -1,7 +1,12 @@
 package mainB.Entities;
 
+import mainB.annotations.primaryKey;
+
 public class User {
+
+    @primaryKey
     private int id;
+    
     private String email;
     private String password;
 
