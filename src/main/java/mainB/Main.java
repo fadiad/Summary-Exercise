@@ -1,7 +1,9 @@
 package mainB;
 
+import mainB.Entities.User;
 import mainB.db.Repo;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 
 public class Main {
@@ -12,20 +14,14 @@ public class Main {
 //        Repo repo = new Repo("asd");
 //        repo.makeDB();
 
+        Field[] allFields = User.class.getDeclaredFields();
+        Repo repo = new Repo("");
 
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            Connection con = DriverManager.getConnection(
-                    "jdbc:mysql://localhost:3306/sonoo", "root", "");
-//here sonoo is database name, root is username and password
-            Statement stmt = con.createStatement();
-            ResultSet rs = stmt.executeQuery("select * from emp");
-            while (rs.next())
-                System.out.println(rs.getInt(1) + "  " + rs.getString(2) + "  " + rs.getString(3));
-            con.close();
-        } catch (Exception e) {
-            System.out.println(e);
-        }
+//        for (Field field : allFields) {
+//            System.out.println(repo.getTypeOfDBTypes(field.getType().getSimpleName()));
+//        }
+
+        repo.makeTable(User.class);
 
 
     }

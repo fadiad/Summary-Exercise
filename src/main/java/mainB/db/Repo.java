@@ -1,5 +1,6 @@
 package mainB.db;
 
+import java.lang.reflect.Field;
 import java.sql.*;
 
 public class Repo {
@@ -10,14 +11,14 @@ public class Repo {
     private static Statement stmt;
 
     public Repo(String DBName) {
-        makeConnection();
-        makeDB();
-        makeTable("stam");
+//        makeConnection("");
+//        makeDB();
+//        makeTable("stam");
     }
 
-    public void makeConnection() {
+    public void makeConnection(String name) {
         try {
-            conn = DriverManager.getConnection(DB_URL, USER, PASS);
+            conn = DriverManager.getConnection(DB_URL + name, USER, PASS);
             stmt = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,18 +45,18 @@ public class Repo {
         }
     }
 
-    public void makeTable(String tableName) {
+
+    public <T> void makeTable(Class<T> myClass) {
         try {
             conn = DriverManager.getConnection(DB_URL + "ORMDB", USER, PASS);
             stmt = conn.createStatement();
-
-            String makeTableQuery = "CREATE TABLE " + tableName + "(id int,email varchar (255), password varchar(255));";
-
-            stmt.executeUpdate(makeTableQuery);
-        } catch (
-                SQLException e) {
+            String makeTableQuery = Utilities.generateTable(myClass);
+            System.out.println(makeTableQuery);
+             stmt.executeUpdate(makeTableQuery);
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
 
 }
