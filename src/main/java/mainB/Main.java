@@ -10,7 +10,7 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) throws NoSuchFieldException {
 
-       User user=new User(11,"Messi","Ronaldo");
+       User user=new User(10,"Messi1","Ronaldo1");
         Repo repo = new Repo(User.class);
         repo.insertInto(user);
         List<User> allObjects = repo.getAllObjects();

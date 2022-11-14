@@ -80,6 +80,7 @@ public class Repo<T> {
 
     public void makeQuery(String query) {
         try {
+            Utilities.logger.debug("trying to perform this query: "+query);
             ResultSet rs = stmt.executeQuery(query);
             while (rs.next())
                 System.out.println(rs.getInt(1) + "  " + rs.getString(2) + "  " + rs.getString(3));

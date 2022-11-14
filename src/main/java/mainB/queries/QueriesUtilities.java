@@ -1,9 +1,14 @@
 package mainB.queries;
 
+import mainB.db.Utilities;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.lang.reflect.Field;
 import java.util.List;
 
 public class QueriesUtilities {
+    public static  final Logger logger = LogManager.getLogger(QueriesUtilities.class);
     public static String getAllObjects(String tableName)
     {
         return "select * from "+ tableName;

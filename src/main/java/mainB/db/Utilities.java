@@ -3,12 +3,13 @@ package mainB.db;
 import mainB.annotations.autoIncrementation;
 import mainB.annotations.primaryKey;
 import mainB.annotations.unique;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class Utilities {
-
+    public static  final Logger logger = LogManager.getLogger(Utilities.class);
     public static <T> String generateTable(Class<T> myClass) {
         StringBuilder stringBuilder = new StringBuilder();
         Field[] fields = myClass.getDeclaredFields();
