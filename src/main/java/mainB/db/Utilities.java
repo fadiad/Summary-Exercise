@@ -60,7 +60,6 @@ public class Utilities {
         return field.isAnnotationPresent( clazz);
     }
 
-
     public static String getTypeOfDBTypes(String type) {
         switch (type) {
             case "int":

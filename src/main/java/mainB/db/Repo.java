@@ -4,7 +4,9 @@ import mainB.queries.QueriesUtilities;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Repo<T> {
     private final String DB_URL = "jdbc:mysql://localhost:3306/";
@@ -58,36 +60,34 @@ public class Repo<T> {
             e.printStackTrace();
         }
     }
+    private  List<T> apply(String query)
+    {
+        try {
+            return Converter.mapResultSetToObject(stmt.executeQuery(query), myClass);
+        } catch (SQLException e) {
+            Utilities.logger.error("Wrong sql Syntax.\n"+e.getMessage());
+        } catch (NoSuchMethodException e) {
+            Utilities.logger.error(String.format("You must have a default constructor in %s. \n",myClass.getSimpleName())+e.getMessage());
+        } catch (InvocationTargetException e) {
+            Utilities.logger.error(String.format("An error has occurred when trying to run the default constructor in  %s class. \n",myClass.getSimpleName())+e.getMessage());
+        } catch (InstantiationException e) {
+            Utilities.logger.error(String.format("An error has occurred when trying to create an instance of %s class. \n",myClass.getSimpleName())+e.getMessage());
+        } catch (IllegalAccessException e) {
+            Utilities.logger.error(String.format("The default constructor is private %s class. \n",myClass.getSimpleName())+e.getMessage());
+        }
+        return new ArrayList<>();
+    }
+    public List<T> getObjectsByConditions(Map<String,Object> conditions)
+    {
+        String whereQuery = QueriesUtilities.preformWhereQuery(TableName, conditions);
+        return apply(whereQuery);
+    }
     public List<T> getAllObjects()
     {
         String getAllObjects= QueriesUtilities.getAllObjects(TableName);
-        makeQuery(getAllObjects);
-        try {
-            return Converter.mapResultSetToObject(stmt.executeQuery(getAllObjects), myClass);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return  null;
+        return apply(getAllObjects);
     }
 
-    public void makeQuery(String query) {
-        try {
-            Utilities.logger.debug("trying to perform this query: "+query);
-            ResultSet rs = stmt.executeQuery(query);
-            while (rs.next())
-                System.out.println(rs.getInt(1) + "  " + rs.getString(2) + "  " + rs.getString(3));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     private void makeTable() {
@@ -100,6 +100,10 @@ public class Repo<T> {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    private String deleteTable()
+    {
+        return "DROP TABLE IF EXISTS "+TableName+";";
     }
 
 }

@@ -1,11 +1,13 @@
 package mainB.queries;
 
-import mainB.db.Utilities;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Field;
-import java.util.List;
+
+import java.util.Map;
+
 
 public class QueriesUtilities {
     public static  final Logger logger = LogManager.getLogger(QueriesUtilities.class);
@@ -53,4 +55,22 @@ public class QueriesUtilities {
         return stringBuilder.toString();
     }
 
+    public static String preformWhereQuery(String tableName, Map<String,Object> conditions)
+    {
+        if(conditions==null || conditions.isEmpty()) return null;
+        StringBuilder stringBuilder=new StringBuilder("select * from " + tableName + " where " );
+        boolean flag=false;
+        for (String key:conditions.keySet()) {
+            if(!flag)
+            {
+                stringBuilder.append(key+" = " + conditions.get(key));
+                flag=true;
+            }
+            else stringBuilder.append(", "+ key+" = " + conditions.get(key));
+        }
+        stringBuilder.append(";");
+        String result = stringBuilder.toString();
+        logger.debug("gets the following where query: "+result );
+        return result;
+    }
 }
