@@ -1,11 +1,16 @@
 package mainB.db;
 
+import mainB.queries.QueriesUtilities;
+
+import java.lang.reflect.InvocationTargetException;
 import java.sql.*;
+import java.util.List;
 
 public class Repo<T> {
     private final String DB_URL = "jdbc:mysql://localhost:3306/";
     private final String USER = "root";
     private final String PASS = "";
+    private final String TableName;
 
     private final Class<T> myClass;
 
@@ -16,10 +21,11 @@ public class Repo<T> {
 
     public Repo(Class<T> myClass) {
         this.myClass = myClass;
+        this.TableName=myClass.getSimpleName();
         start();
     }
 
-    public void start() {
+    private void start() {
         makeConnection("");
         makeDB();
         makeTable();
@@ -42,6 +48,35 @@ public class Repo<T> {
                 SQLException e) {
             e.printStackTrace();
         }
+    }
+    public void insertInto(T obj)
+    {
+        String s = "insert into " + TableName + Converter.convertObjectToSqlInsert(myClass, obj);
+        try {
+            System.out.println(s);
+            stmt.executeUpdate(s);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    public List<T> getAllObjects()
+    {
+        String getAllObjects= QueriesUtilities.getAllObjects(TableName);
+        makeQuery(getAllObjects);
+        try {
+            return Converter.mapResultSetToObject(stmt.executeQuery(getAllObjects), myClass);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        return  null;
     }
 
     public void makeQuery(String query) {
