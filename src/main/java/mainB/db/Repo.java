@@ -55,11 +55,33 @@ public class Repo<T> {
     public void insertInto(T obj) {
         String s = QueriesUtilities.insertObject(TableName, obj, myClass);
         try {
+            Utilities.logger.debug(s);
             stmt.executeUpdate(s);
         } catch (SQLException e) {
-            e.printStackTrace();
+            Utilities.logger.error("sql error caz : " + e.getErrorCode());
+            if (e.getErrorCode() == 1062)
+                System.out.println("You are trying to insert a user with an existed id");
+            else if (e.getErrorCode() == 1064)
+                System.out.println(e.getMessage());
         }
     }
+
+
+    public void insertMany(List<T> list) {
+        for (T obj : list) {
+            insertInto(obj);
+        }
+    }
+
+    public void replaceItem(T oldObject, T newObject) {
+
+    }
+
+    public void deleteObject(T obj) {
+        Map<String, Object> con = new HashMap<>();
+
+    }
+
 
     public int update(Map<String, Object> conditions, Map<String, Object> updateValues) {
         String updateQuery = QueriesUtilities.updateQuery(TableName, conditions, MySQLMethods.UPDATE, updateValues);
@@ -89,6 +111,7 @@ public class Repo<T> {
         }
 
         try {
+
             return Converter.mapResultSetToObject(stmt.executeQuery(query), myClass);
         } catch (SQLException e) {
             Utilities.logger.error("Wrong sql Syntax.\n" + e.getMessage());
@@ -104,10 +127,17 @@ public class Repo<T> {
         return new ArrayList<>();
     }
 
+    public int deleteObjectsByConditions(Map<String, Object> conditions) {
+        String whereQuery = QueriesUtilities.selectAndDeleteQueries(TableName, conditions, MySQLMethods.DELETE);
+        System.out.println(whereQuery);
+        return applyUpdate(whereQuery);
+    }
+
     public List<T> getObjectsByConditions(Map<String, Object> conditions) {
         String whereQuery = QueriesUtilities.selectAndDeleteQueries(TableName, conditions, MySQLMethods.SELECT);
         return apply(whereQuery);
     }
+
 
     public List<T> getAllObjects() {
         String getAllObjects = QueriesUtilities.getAllObjects(TableName);

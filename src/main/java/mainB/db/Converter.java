@@ -1,5 +1,7 @@
 package mainB.db;
 
+import mainB.annotations.myEntity;
+
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.ResultSet;
@@ -21,26 +23,26 @@ class Converter {
                 String columnName = rsmd.getColumnName(i + 1);
                 Object columnValue = rs.getObject(i + 1);
                 for (Field field : fields) {
-                    if (field.getName().equalsIgnoreCase(columnName)) {
-                        setProperty(obj, field.getName(), columnValue);
+                    if (field.getName().equalsIgnoreCase(columnName) && field.getType().isAnnotationPresent(myEntity.class)) {
+                        setProperty(obj, field, JsonConvertor.convertJsonToObject((String) columnValue, field.getType()));
+                    } else if (field.getName().equalsIgnoreCase(columnName)) {
+                        setProperty(obj, field, columnValue);
                         break;
                     }
                 }
             }
             output.add(obj);
         }
-        System.out.println(counter);
+//        System.out.println(counter);
         return output;
     }
 
-    private static void setProperty(Object clazz, String fieldName, Object columnValue) {
+
+    private static void setProperty(Object clazz, Field field, Object columnValue) {
         try {
-            // get all fields of the class (including public/protected/private)
-            Field field = clazz.getClass().getDeclaredField(fieldName);
-            // this is necessary in case the field visibility is set at private
             field.setAccessible(true);
             field.set(clazz, columnValue);
-        } catch (NoSuchFieldException | SecurityException | IllegalArgumentException | IllegalAccessException e) {
+        } catch (SecurityException | IllegalArgumentException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

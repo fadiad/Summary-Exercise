@@ -1,5 +1,6 @@
 package mainB.db;
 
+import mainB.annotations.FixedSize;
 import mainB.annotations.autoIncrementation;
 import mainB.annotations.primaryKey;
 import mainB.annotations.unique;
@@ -20,9 +21,14 @@ public class Utilities {
 
         int counter = 0, length = myClass.getDeclaredFields().length;
         for (Field field : fields) {
-            stringBuilder.append(
-                    field.getName() + " " + getTypeOfDBTypes(field.getType().getSimpleName())
-            );
+            if (field.getType() == String.class && isAnnotated(field, FixedSize.class)) {
+                stringBuilder.append(field.getName() + " varchar(" + field.getAnnotation(FixedSize.class).size() + ") ");
+            } else {
+                stringBuilder.append(
+                        field.getName() + " " + getTypeOfDBTypes(field.getType().getSimpleName())
+                );
+            }
+
             if (isAnnotated(field, unique.class))
                 stringBuilder.append(" unique ");
             if (isAnnotated(field, autoIncrementation.class))

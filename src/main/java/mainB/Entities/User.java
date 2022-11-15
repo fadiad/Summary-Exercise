@@ -1,17 +1,20 @@
 package mainB.Entities;
 
-import mainB.annotations.autoIncrementation;
-import mainB.annotations.primaryKey;
-import mainB.annotations.unique;
+import mainB.annotations.*;
 
+@myEntity
 public class User {
 
     @primaryKey
     @unique
     @autoIncrementation
     private int id;
+    private SomeEntity some=new SomeEntity();
 
+    @FixedSize
     private String email;
+
+    @FixedSize(size = 50)
     private String password;
 
     public User() {
