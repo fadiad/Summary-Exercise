@@ -23,8 +23,8 @@ class Converter {
                 String columnName = rsmd.getColumnName(i + 1);
                 Object columnValue = rs.getObject(i + 1);
                 for (Field field : fields) {
-                    if (field.getName().equalsIgnoreCase(columnName) && field.getType().isAnnotationPresent(myEntity.class)) {
-                        setProperty(obj, field, JsonConvertor.convertJsonToObject((String) columnValue, field.getType()));
+                    if (field.getName().equalsIgnoreCase(columnName) && !PrimitiveHelper.isPrimitiveType(field.getType())) {
+                        setProperty(obj, field, JsonConvertor.convertJsonToObject((String)columnValue,field.getType()));
                     } else if (field.getName().equalsIgnoreCase(columnName)) {
                         setProperty(obj, field, columnValue);
                         break;

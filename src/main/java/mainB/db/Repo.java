@@ -52,11 +52,11 @@ public class Repo<T> {
         }
     }
 
-    public void insertInto(T obj) {
+    public int insertInto(T obj) {
         String s = QueriesUtilities.insertObject(TableName, obj, myClass);
         try {
             Utilities.logger.debug(s);
-            stmt.executeUpdate(s);
+            return stmt.executeUpdate(s);
         } catch (SQLException e) {
             Utilities.logger.error("sql error caz : " + e.getErrorCode());
             if (e.getErrorCode() == 1062)
@@ -64,6 +64,7 @@ public class Repo<T> {
             else if (e.getErrorCode() == 1064)
                 System.out.println(e.getMessage());
         }
+        return -1;
     }
 
 
@@ -77,8 +78,10 @@ public class Repo<T> {
 
     }
 
-    public void deleteObject(T obj) {
-        Map<String, Object> con = new HashMap<>();
+    public int deleteObject(T obj) {
+        Map<String, Object> con = JsonConvertor.fromObjectToMap(obj,myClass);
+        String deleteQuery= QueriesUtilities.selectAndDeleteQueries(TableName, con, MySQLMethods.DELETE);
+        return applyUpdate(deleteQuery);
 
     }
 
