@@ -23,6 +23,7 @@ public class Repo<T> {
 
 
     public int insertInto(T obj) {
+        Objects.requireNonNull(obj);
         String s = QueriesUtilities.insertObject(TableName, obj, myClass);
         try {
             Utilities.logger.debug(s);
@@ -38,18 +39,23 @@ public class Repo<T> {
     }
 
 
-    public void insertMany(List<T> list) {
+    public int insertMany(List<T> list) {
+        int counter =0;
         for (T obj : list) {
-            insertInto(obj);
+            counter+=insertInto(obj);
         }
+        return  counter;
     }
 
     public void replaceItem(T oldObject, T newObject) {
+        if (newObject==null)
+            throw new NullPointerException(String.format("%s is null", newObject));
         deleteObject(oldObject);
         insertInto(newObject);
     }
 
     public int deleteObject(T obj) {
+        Objects.requireNonNull(obj);
         Map<String, Object> con = JsonConvertor.fromObjectToMap(obj, myClass);
         String deleteQuery = QueriesUtilities.selectAndDeleteQueries(TableName, con, MySQLMethods.DELETE);
         return Applies.applyUpdate(stmt, deleteQuery);
