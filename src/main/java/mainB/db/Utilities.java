@@ -5,11 +5,13 @@ import mainB.annotations.primaryKey;
 import mainB.annotations.unique;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 public class Utilities {
-    public static  final Logger logger = LogManager.getLogger(Utilities.class);
+    public static final Logger logger = LogManager.getLogger(Utilities.class);
+
     public static <T> String generateTable(Class<T> myClass) {
         StringBuilder stringBuilder = new StringBuilder();
         Field[] fields = myClass.getDeclaredFields();
@@ -21,9 +23,9 @@ public class Utilities {
             stringBuilder.append(
                     field.getName() + " " + getTypeOfDBTypes(field.getType().getSimpleName())
             );
-            if(isAnnotated(field, unique.class))
+            if (isAnnotated(field, unique.class))
                 stringBuilder.append(" unique ");
-            if(isAnnotated(field, autoIncrementation.class))
+            if (isAnnotated(field, autoIncrementation.class))
                 stringBuilder.append(" AUTO_INCREMENT ");
             if (counter < length - 1)
                 stringBuilder.append(" , ");
@@ -43,7 +45,7 @@ public class Utilities {
         boolean flag = false;
         for (Field field : fields) {
 
-            if (isAnnotated(field,primaryKey.class)) {
+            if (isAnnotated(field, primaryKey.class)) {
                 if (!flag) {
                     flag = true;
                     fieldUser.append(field.getName());
@@ -56,8 +58,8 @@ public class Utilities {
     }
 
 
-    public static boolean isAnnotated(Field field, Class<? extends Annotation>clazz) {
-        return field.isAnnotationPresent( clazz);
+    public static boolean isAnnotated(Field field, Class<? extends Annotation> clazz) {
+        return field.isAnnotationPresent(clazz);
     }
 
     public static String getTypeOfDBTypes(String type) {

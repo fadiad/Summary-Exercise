@@ -1,5 +1,6 @@
 package mainB.db;
 
+import mainB.queries.MySQLMethods;
 import mainB.queries.QueriesUtilities;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,6 +32,7 @@ public class Repo<T> {
         makeTable();
     }
 
+
     private void makeConnection(String name) {
         try {
             conn = DriverManager.getConnection(DB_URL + name, USER, PASS);
@@ -59,7 +61,33 @@ public class Repo<T> {
         }
     }
 
+    public int update(Map<String, Object> conditions, Map<String, Object> updateValues) {
+        String updateQuery = QueriesUtilities.updateQuery(TableName, conditions, MySQLMethods.UPDATE, updateValues);
+        System.out.println(updateQuery);
+        return applyUpdate(updateQuery);
+    }
+
+    private int applyUpdate(String query) {
+        if (query == null) {
+            Utilities.logger.error("query was null !");
+            return 0;
+        }
+
+        try {
+            return stmt.executeUpdate(query);
+        } catch (SQLException e) {
+            Utilities.logger.error("Wrong sql Syntax.\n" + e.getMessage());
+        }
+        return 0;
+    }
+
+
     private List<T> apply(String query) {
+        if (query == null) {
+            Utilities.logger.error("query was null !");
+            return new ArrayList<>();
+        }
+
         try {
             return Converter.mapResultSetToObject(stmt.executeQuery(query), myClass);
         } catch (SQLException e) {
@@ -77,7 +105,7 @@ public class Repo<T> {
     }
 
     public List<T> getObjectsByConditions(Map<String, Object> conditions) {
-        String whereQuery = QueriesUtilities.preformWhereQuery(TableName, conditions);
+        String whereQuery = QueriesUtilities.selectAndDeleteQueries(TableName, conditions, MySQLMethods.SELECT);
         return apply(whereQuery);
     }
 
@@ -89,7 +117,7 @@ public class Repo<T> {
     public Optional<T> getObjectById(int id) {
         Map<String, Object> condition = new HashMap<>();
         condition.put("id", id);
-        List<T> item = apply(QueriesUtilities.preformWhereQuery(TableName, condition));
+        List<T> item = apply(QueriesUtilities.selectAndDeleteQueries(TableName, condition, MySQLMethods.SELECT));
         if (item.size() == 0) {
             return Optional.empty();
         } else {
