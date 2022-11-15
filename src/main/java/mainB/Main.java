@@ -1,6 +1,7 @@
 package mainB;
 
 import mainB.Entities.User;
+import mainB.db.JsonConvertor;
 import mainB.db.Repo;
 import mainB.db.Utilities;
 
@@ -10,13 +11,19 @@ import java.util.List;
 import java.util.Map;
 
 public class Main {
-    public static void main(String[] args) throws NoSuchFieldException {
+    public static void main(String[] args) throws NoSuchFieldException, IllegalAccessException {
 
         User user = new User(4, "t", "t");
+        Repo repo = new Repo(User.class);
+        System.out.println(repo.insertInto(user));
+        System.out.println( repo.getAllObjects());
+
+        System.out.println( repo.deleteObject(user));
+        System.out.println(JsonConvertor.convertStringToJason(user,User.class));
         Map<String, Object> conditions = new HashMap<>();
         conditions.put("id", 2);
-        Repo repo = new Repo(User.class);
-        repo.insertInto(user);
+
+
         List<User> allObjects = repo.getAllObjects();
         System.out.println(allObjects);
 

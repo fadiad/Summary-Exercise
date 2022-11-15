@@ -1,8 +1,10 @@
 package mainB.queries;
 
 
+import mainB.db.JsonConvertor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.util.Strings;
 
 import java.lang.reflect.Field;
 
@@ -16,7 +18,7 @@ public class QueriesUtilities {
         return "select * from " + tableName;
     }
 
-    public static <T> String insertObject(String tableName, T obj, Class<T> clazz) {
+    public static <T> String insertObject(String tableName, T obj, Class<T> clazz)  {
         StringBuilder stringBuilder = new StringBuilder(String.format("INSERT INTO  %s (", tableName));
         Field[] declaredFields = clazz.getDeclaredFields();
         Object[] values = new Object[declaredFields.length];
@@ -36,7 +38,12 @@ public class QueriesUtilities {
         }
         counter = 0;
         stringBuilder.append(") VALUES (");
-        for (Object value : values) {
+        try {
+            stringBuilder.append(JsonConvertor.convertStringToJason(obj,clazz));
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        /*for (Object value : values) {
             if (value instanceof String) {
                 stringBuilder.append("\"");
                 stringBuilder.append(value);
@@ -46,7 +53,7 @@ public class QueriesUtilities {
                 stringBuilder.append(",");
             }
             counter++;
-        }
+        }*/
         stringBuilder.append(");");
         return stringBuilder.toString();
     }
@@ -96,7 +103,7 @@ public class QueriesUtilities {
             if (!flag) {
                 stringBuilder.append(key + " = " + conditions.get(key));
                 flag = true;
-            } else stringBuilder.append(", " + key + " = " + conditions.get(key));
+            } else stringBuilder.append(" AND " + key + " = " + conditions.get(key));
         }
         stringBuilder.append(";");
         String result = stringBuilder.toString();
