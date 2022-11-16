@@ -2,7 +2,7 @@ package mainB.Entities;
 
 import mainB.annotations.*;
 
-@myEntity
+
 public class User {
 
     @primaryKey

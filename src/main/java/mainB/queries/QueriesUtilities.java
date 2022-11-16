@@ -17,7 +17,9 @@ public class QueriesUtilities {
     public static String getAllObjects(String tableName) {
         return "select * from " + tableName;
     }
-
+    public static String deleteTable(String TableName) {
+        return "DROP TABLE IF EXISTS " + TableName + ";";
+    }
     public static <T> String insertObject(String tableName, T obj, Class<T> clazz)  {
         StringBuilder stringBuilder = new StringBuilder(String.format("INSERT INTO  %s (", tableName));
         Field[] declaredFields = clazz.getDeclaredFields();

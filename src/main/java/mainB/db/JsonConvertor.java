@@ -1,7 +1,7 @@
 package mainB.db;
 
 import com.google.gson.Gson;
-import mainB.annotations.myEntity;
+
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
