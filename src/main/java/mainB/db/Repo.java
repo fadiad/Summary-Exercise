@@ -98,5 +98,15 @@ public class Repo<T> {
             return Optional.of(item.get(0));
         }
     }
-
+   public int deleteTable()
+   {
+       int result = ConnectionManger.getInstance().deleteTable(TableName);
+       /*
+       try {
+           this.stmt.close();
+       } catch (SQLException e) {
+           throw new RuntimeException("can't close connection.",e);
+       }*/
+       return result;
+   }
 }

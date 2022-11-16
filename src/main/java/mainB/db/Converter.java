@@ -1,6 +1,5 @@
 package mainB.db;
 
-import mainB.annotations.myEntity;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

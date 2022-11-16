@@ -1,5 +1,7 @@
 package mainB.db;
 
+import mainB.queries.QueriesUtilities;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -35,8 +37,9 @@ class ConnectionManger {
             throw new IllegalStateException("There was problems when trying to create the table. " ,e);
         }
     }
-    public String deleteTable(String TableName) {
-        return "DROP TABLE IF EXISTS " + TableName + ";";
+    public int deleteTable(String TableName) {
+        return Applies.applyUpdate(stmt, QueriesUtilities.deleteTable(TableName));
+
     }
     private void makeDB() {
         try {
